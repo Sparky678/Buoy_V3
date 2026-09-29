@@ -103,9 +103,8 @@ NOTIFY_CLEAR       = True
 NOTIFY_HEALTH      = True
 
 # --- TELEGRAM ---
-TELEGRAM_BOT_TOKEN   = os.environ.get("UTEWS_TG_TOKEN",
-                                      "7968090864:AAEUu-7LbPOL5zc9Zh_9o_keb3o0Xxfdcow")
-TELEGRAM_CHAT_ID     = os.environ.get("UTEWS_TG_CHAT_ID", "8530959816")
+TELEGRAM_BOT_TOKEN   = os.environ.get("UTEWS_TG_TOKEN", "")
+TELEGRAM_CHAT_ID     = os.environ.get("UTEWS_TG_CHAT_ID", "")
 TELEGRAM_API_URL     = "https://api.telegram.org/bot{token}/sendMessage"
 TELEGRAM_TIMEOUT_S   = 10
 TELEGRAM_MAX_RETRIES = 3
