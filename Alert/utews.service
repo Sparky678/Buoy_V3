@@ -1,0 +1,47 @@
+[Unit]
+Description=U-TEWS Real-Time EEMD Tsunami Detection Pipeline
+Documentation=Skripsi Aryo UNILA - Pulau Sebesi, Lampung
+After=network-online.target
+Wants=network-online.target
+# Mulai setelah water_monitoring_10hz.py jalan (kalau service-nya ada)
+# Uncomment baris berikut jika water_monitoring sudah jadi service juga:
+# After=water-monitoring.service
+# Requires=water-monitoring.service
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi/utews
+
+# Environment file untuk credential Telegram (jangan hardcode di unit file)
+EnvironmentFile=/home/orangepi/utews/utews.env
+
+# Eksekusi
+ExecStart=/usr/bin/python3 /home/orangepi/utews/utews_realtime.py
+
+# Restart otomatis kalau crash, tapi tidak terlalu agresif
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=300
+StartLimitBurst=5
+
+# Logging — journalctl -u utews -f untuk monitoring live
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=utews
+
+# Resource limits (Orange Pi 5 punya 8GB RAM, kasih cukup)
+MemoryHigh=2G
+MemoryMax=4G
+
+# Nice value — beri prioritas sedikit lebih tinggi dari proses biasa
+Nice=-5
+
+# Kill gracefully (kasih waktu 30 detik untuk shutdown)
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,37 @@
+[Unit]
+Description=Buoy-V3 store-and-forward uploader (CSV -> MQTT batch)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi/Buoy-V3/uploader
+
+# Kredensial broker. Isi di /home/orangepi/Buoy-V3/uploader/uploader.env (chmod 600).
+# Tanda "-" di depan berarti: kalau file belum ada, pakai nilai bawaan di kode.
+EnvironmentFile=-/home/orangepi/Buoy-V3/uploader/uploader.env
+
+ExecStart=/home/orangepi/myenv/bin/python3 /home/orangepi/Buoy-V3/uploader/uploader.py --mqtt
+
+# Prioritas RENDAH: uploader tidak boleh mengganggu akuisisi 10 Hz,
+# kernel PREEMPT_RT, maupun perhitungan EEMD.
+Nice=15
+IOSchedulingClass=idle
+
+# Berhenti dengan rapi: SIGTERM -> siklus berjalan diselesaikan, checkpoint disimpan.
+KillSignal=SIGTERM
+TimeoutStopSec=120
+
+Restart=always
+RestartSec=30
+
+NoNewPrivileges=true
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=buoy-uploader
+
+[Install]
+WantedBy=multi-user.target
